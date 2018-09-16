@@ -56,6 +56,7 @@ pub extern "C" fn msg_from_js(d: *const DenoC, buf: deno_buf) {
     msg::Any::Remove => handle_remove,
     msg::Any::ReadFile => handle_read_file,
     msg::Any::Rename => handle_rename,
+    msg::Any::CopyFile => handle_copy_file,
     msg::Any::SetEnv => handle_set_env,
     msg::Any::Stat => handle_stat,
     msg::Any::WriteFile => handle_write_file,
@@ -669,6 +670,22 @@ fn handle_rename(d: *const DenoC, base: &msg::Base) -> Box<Op> {
   Box::new(futures::future::result(|| -> OpResult {
     debug!("handle_rename {} {}", oldpath, newpath);
     fs::rename(Path::new(&oldpath), Path::new(&newpath))?;
+    Ok(None)
+  }()))
+}
+
+fn handle_copy_file(d: *const DenoC, base: &msg::Base) -> Box<Op> {
+  let msg = base.msg_as_copy_file().unwrap();
+  let src = String::from(msg.src().unwrap());
+  let dest = String::from(msg.dest().unwrap());
+  let deno = from_c(d);
+  if !deno.flags.allow_write {
+    return odd_future(permission_denied());
+  }
+ 
+  Box::new(futures::future::result(|| -> OpResult {
+    debug!("handle_copy_file {} {}", src, dest);
+    fs::copy(Path::new(&src), Path::new(&dest))?;
     Ok(None)
   }()))
 }

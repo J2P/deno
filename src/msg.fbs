@@ -23,6 +23,7 @@ union Any {
   Stat,
   StatRes,
   SetEnv,
+  CopyFile,
 }
 
 enum ErrorKind: byte {
@@ -214,6 +215,11 @@ table StatRes {
   created:ulong;
   mode: int = -1;
   // negative mode for invalid (Windows); default to invalid
+}
+
+table CopyFile {
+  src: string;
+  dest: string;
 }
 
 root_type Base;

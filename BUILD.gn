@@ -57,6 +57,7 @@ ts_sources = [
   "js/blob.ts",
   "js/compiler.ts",
   "js/console.ts",
+  "js/copy_file.ts",
   "js/deno.ts",
   "js/dispatch.ts",
   "js/dom_types.d.ts",
