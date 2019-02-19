@@ -105,6 +105,6 @@ pub fn normalize_path(path: &Path) -> String {
     // TODO This isn't correct. Probbly should iterate over components.
     s.replace("\\", "/")
   } else {
-    s
+    s.replace("/./", "/")
   }
 }
